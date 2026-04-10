@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../enums/scheme_element_type.dart';
-import 'toolbox_items.dart';
+import 'toolbox_items.dart';  // здесь уже есть lamp()
 
 class ToolboxPanel extends StatelessWidget {
   const ToolboxPanel({super.key});
@@ -60,6 +60,12 @@ class ToolboxPanel extends StatelessWidget {
             SchemeElementType.line,
             schemeLine(50, isVertical: true),
             isVertical: true,
+          ),
+          const SizedBox(height: 8),
+          //lamp
+          toolboxDraggable(
+            SchemeElementType.lamp, 
+            lamp(),  
           ),
         ],
       ),

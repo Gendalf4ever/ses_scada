@@ -133,6 +133,8 @@ Widget build(BuildContext context) {
 }
 }
 
+
+// тест для сохранения схем
 class _SchemeCard extends StatelessWidget {
   final SavedSchemeModel scheme;
   final VoidCallback onTap;

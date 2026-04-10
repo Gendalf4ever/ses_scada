@@ -6,5 +6,6 @@ enum SchemeElementType {
   sdg,
   transformer,
   line,
-  automation
+  automation,
+  lamp
 }

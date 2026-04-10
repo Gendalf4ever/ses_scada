@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ses_scada/widgets/customLamp.dart';
 import 'package:ses_scada/widgets/toolbox_items.dart';
 import '../models/scheme_element.dart';
 import '../enums/scheme_element_type.dart';
@@ -68,6 +69,8 @@ class _PlacedElementState extends State<PlacedElement> {
         return _buildWithSensors(schemeTallRect('T'));
       case SchemeElementType.automation:
         return _buildWithSensors(schemeBox('Q'));
+      case SchemeElementType.lamp:
+        return CustomLamp(isOn: true);  
       case SchemeElementType.pch:
         return _buildWithSensors(schemeBox('ПЧ'));
       case SchemeElementType.line:

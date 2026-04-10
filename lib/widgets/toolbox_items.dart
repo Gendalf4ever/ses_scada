@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ses_scada/widgets/customLamp.dart';
 import '../enums/scheme_element_type.dart';
 
 class ToolboxData {
@@ -68,4 +69,9 @@ Widget resizeHandle() => Container(
         color: Colors.white,
         border: Border.all(color: Colors.blueAccent),
       ),
+    );
+
+Widget lamp() => const CustomLamp(
+      isOn: true,
+      size: 40,
     );
