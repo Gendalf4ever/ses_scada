@@ -33,6 +33,12 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
         : [];
   }
 
+  void _deleteElement(SchemeElement element) {
+    setState(() {
+      elements.remove(element);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +56,7 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
                         elements.add(element);
                       });
                     },
+                    onDeleteElement: _deleteElement,
                     onUpdate: () => setState(() {}),
                   ),
                   const ToolboxPanel(),
@@ -78,6 +85,10 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
                       elements: List.from(elements),
                     ),
                   );
+                  
+                  if (mounted) {
+                    Navigator.of(context).pop(true);
+                  }
                 },
               ),
             ),

@@ -7,12 +7,14 @@ import 'toolbox_items.dart';
 class CanvasWidget extends StatelessWidget {
   final List<SchemeElement> elements;
   final Function(SchemeElement) onAddElement;
+  final Function(SchemeElement) onDeleteElement;
   final VoidCallback onUpdate;
 
   const CanvasWidget({
     super.key,
     required this.elements,
     required this.onAddElement,
+    required this.onDeleteElement,
     required this.onUpdate,
   });
 
@@ -34,13 +36,14 @@ class CanvasWidget extends StatelessWidget {
 
           onAddElement(element);
         },
-        builder: (_, __, ___) {
+        builder: (_, _, _) {
           return Container(
             color: Colors.black,
             child: Stack(
               children: elements
                   .map((e) => PlacedElement(
                         element: e,
+                        onDelete: () => onDeleteElement(e),
                         onUpdate: onUpdate,
                       ))
                   .toList(),

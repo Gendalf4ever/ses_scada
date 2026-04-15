@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:ses_scada/widgets/customLamp.dart';
-import 'package:ses_scada/widgets/toolbox_items.dart';
+import 'package:ses_scada/widgets/customPopupPage.dart';
+import 'package:ses_scada/widgets/customButton.dart';
 import '../models/scheme_element.dart';
 import '../enums/scheme_element_type.dart';
+import 'toolbox_items.dart';
 
 class PlacedElement extends StatefulWidget {
   final SchemeElement element;
+  final VoidCallback onDelete;
   final VoidCallback onUpdate;
 
   const PlacedElement({
     super.key,
     required this.element,
+    required this.onDelete,
     required this.onUpdate,
   });
 
@@ -22,6 +26,57 @@ class _PlacedElementState extends State<PlacedElement> {
   Offset? _startMouse;
   Offset? _startPosition;
   double? _startLength;
+  bool _isHovered = false;
+
+  void _showContextMenu() {
+    final isLine = widget.element.type == SchemeElementType.line;
+    
+    List<Widget> menuItems = [
+      CustomButton(
+        label: 'Удалить',
+        color: Colors.red,
+        width: 180,
+        height: 40,
+        onPressed: () {
+          Navigator.of(context).pop();
+          widget.onDelete();
+        },
+      ),
+      const SizedBox(height: 12),
+    ];
+
+    if (isLine) {
+      menuItems.insert(0, Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomButton(
+            label: widget.element.isVertical ? 'Сделать горизонтальной' : 'Сделать вертикальной',
+            color: Colors.blue,
+            width: 180,
+            height: 40,
+            onPressed: () {
+              Navigator.of(context).pop();
+              setState(() {
+                widget.element.isVertical = !widget.element.isVertical;
+                widget.onUpdate();
+              });
+            },
+          ),
+          const SizedBox(height: 12),
+        ],
+      ));
+    }
+
+    showDialog(
+      context: context,
+      builder: (_) => CustomPopupPage(
+        title: 'Удаление элемента',
+        showCloseButton: true,
+        borderColor: Colors.blue,
+        widgetStack: menuItems,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,27 +85,54 @@ class _PlacedElementState extends State<PlacedElement> {
     return Positioned(
       left: e.position.dx,
       top: e.position.dy,
-      child: GestureDetector(
-        onDoubleTap: () {
-          // TODO: Implement sensor binding dialog if needed
-          // For now, just show a placeholder
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Привязка датчиков в разработке')),
-          );
-        },
-        onPanStart: (details) {
-          _startMouse = details.globalPosition;
-          _startPosition = e.position;
-        },
-        onPanUpdate: (details) {
-          final dx = details.globalPosition.dx - _startMouse!.dx;
-          final dy = details.globalPosition.dy - _startMouse!.dy;
-          setState(() {
-            e.position = Offset(_startPosition!.dx + dx, _startPosition!.dy + dy);
-          });
-          widget.onUpdate();
-        },
-        child: _buildVisual(),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          onSecondaryTap: _showContextMenu,
+          onDoubleTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Привязка датчиков в разработке')),
+            );
+          },
+          onPanStart: (details) {
+            _startMouse = details.globalPosition;
+            _startPosition = e.position;
+          },
+          onPanUpdate: (details) {
+            final dx = details.globalPosition.dx - _startMouse!.dx;
+            final dy = details.globalPosition.dy - _startMouse!.dy;
+            setState(() {
+              e.position = Offset(_startPosition!.dx + dx, _startPosition!.dy + dy);
+            });
+            widget.onUpdate();
+          },
+          child: Stack(
+            children: [
+              _buildVisual(),
+              if (_isHovered)
+                Positioned(
+                  top: -12,
+                  right: -12,
+                  child: GestureDetector(
+                    onTap: _showContextMenu,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 1.5),
+                      ),
+                      child: const Icon(
+                        Icons.more_vert,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

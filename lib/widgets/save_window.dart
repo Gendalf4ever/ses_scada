@@ -77,14 +77,18 @@ class _SaveWindowState extends State<SaveWindow> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomButton(
+                  Expanded(
+                    child: CustomButton(
                     label: 'Отмена',
                     onPressed: () => Navigator.pop(context),
+                    ),
                   ),
                   const SizedBox(width: 12),
-                  CustomButton(
+                  Expanded(
+                    child:  CustomButton(
                     label: 'Сохранить',
                     onPressed: onSavePressed,
+                    ),
                   ),
                 ],
               ),
