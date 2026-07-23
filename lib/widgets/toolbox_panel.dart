@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../enums/scheme_element_type.dart';
-import 'toolbox_items.dart';  // здесь уже есть lamp()
+import 'toolbox_items.dart'; 
 
 class ToolboxPanel extends StatelessWidget {
   const ToolboxPanel({super.key});

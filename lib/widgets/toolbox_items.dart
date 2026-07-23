@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ses_scada/widgets/customLamp.dart';
+import 'package:ses_scada/widgets/ui/customLamp.dart';
 import '../enums/scheme_element_type.dart';
 
 class ToolboxData {
@@ -75,3 +75,14 @@ Widget lamp() => const CustomLamp(
       isOn: true,
       size: 40,
     );
+
+Widget grshbackground() => Container(
+   padding: EdgeInsets.all(5 ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: const Color.fromARGB(255, 37, 49, 54),
+              ),
+            margin: EdgeInsets.all(5),
+            height: 200, 
+            width: 1750,
+);

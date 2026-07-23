@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ses_scada/widgets/customLamp.dart';
-import 'package:ses_scada/widgets/customPopupPage.dart';
-import 'package:ses_scada/widgets/customButton.dart';
+import 'package:ses_scada/widgets/ui/customLamp.dart';
+import 'package:ses_scada/widgets/ui/customPopupPage.dart';
+import 'package:ses_scada/widgets/ui/customButton.dart';
 import '../models/scheme_element.dart';
 import '../enums/scheme_element_type.dart';
 import 'toolbox_items.dart';
@@ -157,6 +157,9 @@ class _PlacedElementState extends State<PlacedElement> {
         return _buildWithSensors(schemeBox('ПЧ'));
       case SchemeElementType.line:
         return _buildResizableLine();
+      case SchemeElementType.grshbackground:
+        return _buildBackground();
+
     }
   }
 
@@ -214,5 +217,18 @@ class _PlacedElementState extends State<PlacedElement> {
         ),
       ],
     );
+  }
+  Widget _buildBackground(){
+  // final e = widget.element;
+   return Container(
+      padding: EdgeInsets.all(5 ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: const Color.fromARGB(255, 37, 49, 54),
+              ),
+            margin: EdgeInsets.all(5),
+            height: 200, 
+            width: 1750,
+   );
   }
 }

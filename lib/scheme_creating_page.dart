@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ses_scada/widgets/customButton.dart';
+import 'package:ses_scada/widgets/ui/customButton.dart';
 import '../models/scheme_element.dart';
 import '../models/saved_scheme_model.dart';
 import '../state_manager/scheme_storage.dart';
-
 import '../widgets/canvas_widget.dart';
 import '../widgets/save_window.dart';
 import '../widgets/toolbox_panel.dart';
@@ -97,7 +96,7 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
               top: 20,
               left: 20,
               child: CustomButton(
-                label: '<-',
+                icon:Icon(Icons.arrow_back),
                 width: 50,
                 height: 50,
                 onPressed: () => Navigator.of(context).pop(),

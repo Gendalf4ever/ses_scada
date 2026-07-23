@@ -8,5 +8,6 @@ enum SchemeElementType {
   line,
   automation,
   lamp,
+  grshbackground
   //slider imputpox(?), button(?)
 }

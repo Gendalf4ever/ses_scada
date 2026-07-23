@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:ses_scada/enums/scheme_element_type.dart';
-
 import 'scheme_element.dart';
 
 class SavedSchemeModel {

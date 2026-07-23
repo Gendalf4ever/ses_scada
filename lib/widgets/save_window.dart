@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ses_scada/widgets/customButton.dart';
+import 'package:ses_scada/widgets/ui/customButton.dart';
 
 
 class SaveWindow extends StatefulWidget {
