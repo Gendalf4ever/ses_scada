@@ -28,7 +28,31 @@ class _PlacedElementState extends State<PlacedElement> {
   Offset? _startPosition;
   double? _startLength;
   bool _isHovered = false;
-
+    //for popup
+  void _showSensorsConfigDialog(){
+    showDialog(
+      context: context, 
+      builder: (_) => CustomPopupPage(
+        title: 'Привязка датчиков',
+        showCloseButton: true,
+        borderColor: ColorManager.primary, 
+        widgetStack: [
+          Text(
+            'Элемент: ${widget.element.type.name}',
+            style: TextStyle(color: ColorManager.text, fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+          CustomButton(
+            label: 'Закрыть',
+            onPressed: (){
+              Navigator.of(context).pop();
+              widget.onUpdate();
+            }
+            ),
+        ]
+        )
+      );
+  }
   void _showContextMenu() {
     final isLine = widget.element.type == SchemeElementType.line;
     
@@ -91,11 +115,7 @@ class _PlacedElementState extends State<PlacedElement> {
         onExit: (_) => setState(() => _isHovered = false),
         child: GestureDetector(
           onSecondaryTap: _showContextMenu,
-          onDoubleTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Привязка датчиков в разработке')),
-            );
-          },
+          onDoubleTap: _showSensorsConfigDialog, 
           onPanStart: (details) {
             _startMouse = details.globalPosition;
             _startPosition = e.position;
