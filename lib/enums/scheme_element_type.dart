@@ -7,5 +7,6 @@ enum SchemeElementType {
   transformer,
   line,
   automation,
-  lamp
+  lamp,
+  //slider imputpox(?), button(?)
 }
