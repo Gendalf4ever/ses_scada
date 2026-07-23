@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:ses_scada/models/saved_scheme_model.dart';
 import 'package:ses_scada/scheme_creating_page.dart';
 import 'package:ses_scada/state_manager/scheme_storage.dart';
+import 'package:ses_scada/widgets/ui/customButton.dart';
+
+import 'components/colorManager.dart';
 
 class SchemesListPage extends StatefulWidget {
   const SchemesListPage({super.key});
@@ -44,10 +47,27 @@ Widget build(BuildContext context) {
       backgroundColor: const Color(0xFF1E2A30),
       elevation: 0,
       actions: [
-        IconButton(
-          icon: const Icon(Icons.refresh, color: Colors.white),
+        CustomButton(
+          icon: Icon(Icons.refresh, color: ColorManager.text,),
           onPressed: _loadSchemes,
-        ),
+          ),
+
+          AnimatedBuilder(
+            animation: ColorManager.themeChanges, 
+            builder: (context, _){
+              final isDark = ColorManager.activeTheme == AppThemes.dark;
+              return CustomButton(
+                icon: Icon(
+                  isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                  color: ColorManager.text,
+                ),
+                onPressed: (){
+                  final nextTheme = isDark ? AppThemes.light : AppThemes.dark;
+                  ColorManager.switchTheme(nextTheme);
+                }
+              );
+            },
+          ),
       ],
     ),
     body: Column(
