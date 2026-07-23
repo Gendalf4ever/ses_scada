@@ -248,7 +248,7 @@ class _SchemeCard extends StatelessWidget {
                 children: [
                    Icon(Icons.draw, color: ColorManager.primary, size: 28),
                   IconButton(
-                    icon:  Icon(Icons.delete_outline, color: ColorManager.primary, size: 20),
+                    icon:  Icon(Icons.delete_outline, color: ColorManager.delete, size: 20),
                     onPressed: onDelete,
                   ),
                 ],
@@ -267,11 +267,11 @@ class _SchemeCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'Элементов: ${scheme.elements.length}',
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                style:  TextStyle(color: ColorManager.text, fontSize: 12),
               ),
               Text(
                 'Создана: ${_formatDate(scheme.createdAt)}',
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                style:  TextStyle(color: ColorManager.text, fontSize: 12),
               ),
             ],
           ),

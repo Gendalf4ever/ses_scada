@@ -4,6 +4,7 @@ import 'package:ses_scada/widgets/ui/customPopupPage.dart';
 import 'package:ses_scada/widgets/ui/customButton.dart';
 import '../models/scheme_element.dart';
 import '../enums/scheme_element_type.dart';
+import 'components/colorManager.dart';
 import 'toolbox_items.dart';
 
 class PlacedElement extends StatefulWidget {
@@ -34,7 +35,7 @@ class _PlacedElementState extends State<PlacedElement> {
     List<Widget> menuItems = [
       CustomButton(
         label: 'Удалить',
-        color: Colors.red,
+        color: ColorManager.delete,
         width: 180,
         height: 40,
         onPressed: () {
@@ -51,7 +52,7 @@ class _PlacedElementState extends State<PlacedElement> {
         children: [
           CustomButton(
             label: widget.element.isVertical ? 'Сделать горизонтальной' : 'Сделать вертикальной',
-            color: Colors.blue,
+            color: ColorManager.primary,
             width: 180,
             height: 40,
             onPressed: () {
@@ -72,7 +73,7 @@ class _PlacedElementState extends State<PlacedElement> {
       builder: (_) => CustomPopupPage(
         title: 'Удаление элемента',
         showCloseButton: true,
-        borderColor: Colors.blue,
+        borderColor: ColorManager.primary,
         widgetStack: menuItems,
       ),
     );
@@ -118,14 +119,14 @@ class _PlacedElementState extends State<PlacedElement> {
                     onTap: _showContextMenu,
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.red,
+                        color: ColorManager.delete,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 1.5),
                       ),
-                      child: const Icon(
+                      child:  Icon(
                         Icons.more_vert,
                         size: 16,
-                        color: Colors.white,
+                        color: ColorManager.text,
                       ),
                     ),
                   ),
@@ -169,10 +170,10 @@ class _PlacedElementState extends State<PlacedElement> {
       children: [
         child,
         if (widget.element.boundSensors.isNotEmpty)
-          const Icon(
+           Icon(
             Icons.sensors,
             size: 14,
-            color: Colors.white,
+            color: ColorManager.text,
           ),
       ],
     );
@@ -224,7 +225,7 @@ class _PlacedElementState extends State<PlacedElement> {
       padding: EdgeInsets.all(5 ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              color: const Color.fromARGB(255, 37, 49, 54),
+              color: ColorManager.primaryBackground
               ),
             margin: EdgeInsets.all(5),
             height: 200, 

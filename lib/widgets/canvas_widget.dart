@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/scheme_element.dart';
 //import '../enums/scheme_element_type.dart';
+import 'components/colorManager.dart';
 import 'placed_element.dart';
 import 'toolbox_items.dart';
 
@@ -38,7 +39,7 @@ class CanvasWidget extends StatelessWidget {
         },
         builder: (_, _, _) {
           return Container(
-            color: Colors.black,
+            color: ColorManager.primaryBackground,
             child: Stack(
               children: elements
                   .map((e) => PlacedElement(

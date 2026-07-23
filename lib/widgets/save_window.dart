@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ses_scada/widgets/ui/customButton.dart';
 
+import 'components/colorManager.dart';
+
 
 class SaveWindow extends StatefulWidget {
   const SaveWindow({super.key});
@@ -16,11 +18,11 @@ class _SaveWindowState extends State<SaveWindow> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: const Color.fromARGB(255, 48, 63, 70),
+      backgroundColor:ColorManager.primaryBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(2),
-        side: const BorderSide(
-          color: Colors.blueAccent,
+        side:  BorderSide(
+          color: ColorManager.primary,
           width: 2,
         ),
       ),
@@ -32,11 +34,11 @@ class _SaveWindowState extends State<SaveWindow> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Center(
+               Center(
                 child: Text(
                   'Сохранение',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: ColorManager.text,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -47,25 +49,25 @@ class _SaveWindowState extends State<SaveWindow> {
 
               TextField(
                 controller: fileNameController,
-                style: const TextStyle(color: Colors.white),
-                cursorColor: Colors.blueAccent,
+                style:  TextStyle(color: ColorManager.text),
+                cursorColor: ColorManager.primary,
                 decoration: InputDecoration(
                   hintText: 'Имя схемы',
-                  hintStyle: const TextStyle(color: Colors.white54),
+                  hintStyle:  TextStyle(color: ColorManager.text),
                   errorText: errorText,
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 48, 63, 70),
-                  enabledBorder: const OutlineInputBorder(
+                  fillColor:  ColorManager.primaryBackground,
+                  enabledBorder:  OutlineInputBorder(
                     borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
-                      color: Colors.blueAccent,
+                      color: ColorManager.primary,
                       width: 2,
                     ),
                   ),
-                  focusedBorder: const OutlineInputBorder(
+                  focusedBorder:  OutlineInputBorder(
                     borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
-                      color: Colors.blueAccent,
+                      color:ColorManager.primary,
                       width: 2,
                     ),
                   ),

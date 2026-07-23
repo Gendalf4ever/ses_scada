@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../enums/scheme_element_type.dart';
+import 'components/colorManager.dart';
 import 'toolbox_items.dart'; 
 
 class ToolboxPanel extends StatelessWidget {
@@ -9,7 +10,7 @@ class ToolboxPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 120,
-      color: const Color(0xFF1E2A30),
+      color: ColorManager.secondaryBackground,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -10,6 +10,7 @@ class AppColors {
   final Color primaryBackground;
   final Color secondaryBackground;
   final Color text;
+  final Color delete;
 
   const AppColors({
     required this.primary,
@@ -19,6 +20,7 @@ class AppColors {
     required this.primaryBackground,
     required this.secondaryBackground,
     required this.text,
+    required this.delete,
   });
 
   AppColors copyWith({
@@ -29,6 +31,7 @@ class AppColors {
     Color? primaryBackground,
     Color? secondaryBackground,
     Color? text,
+    Color? delete,
   }) => AppColors(
     primary: primary ?? this.primary,
     primaryLight: primaryLight ?? this.primaryLight,
@@ -37,6 +40,7 @@ class AppColors {
     primaryBackground: primaryBackground ?? this.primaryBackground,
     secondaryBackground: secondaryBackground ?? this.secondaryBackground,
     text: text ?? this.text,
+    delete: delete ?? this.delete,
   );
 }
 
@@ -57,6 +61,7 @@ class AppThemes {
       primaryBackground: Colors.black,
       secondaryBackground: Color.fromARGB(255, 37, 49, 54),
       text: Colors.white,
+      delete: Colors.red,
     ),
     light: AppColors(
       primary: Colors.blue,
@@ -66,6 +71,7 @@ class AppThemes {
       primaryBackground: Color.fromARGB(255, 255, 255, 255),
       secondaryBackground: Color.fromARGB(255, 196, 196, 196),
       text: Color(0xFF212121),
+      delete: Color(0xFFB3261E),
     ),
   };
 }
@@ -122,6 +128,7 @@ class ColorManager {
   static Color get primaryBackground => _c.primaryBackground;
   static Color get secondaryBackground => _c.secondaryBackground;
   static Color get text => _c.text;
+  static Color get delete => _c.delete;
 
   // ── Switch to a named theme ───────────────────────────────────────────────
 

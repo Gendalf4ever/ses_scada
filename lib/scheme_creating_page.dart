@@ -6,6 +6,7 @@ import '../state_manager/scheme_storage.dart';
 import '../widgets/canvas_widget.dart';
 import '../widgets/save_window.dart';
 import '../widgets/toolbox_panel.dart';
+import 'widgets/components/colorManager.dart';
 
 class SchemeCreatingPage extends StatefulWidget {
   final SavedSchemeModel? scheme;
@@ -40,87 +41,92 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Row(
-                children: [
-                  CanvasWidget(
-                    elements: elements,
-                    onAddElement: (element) {
-                      setState(() {
-                        elements.add(element);
-                      });
-                    },
-                    onDeleteElement: _deleteElement,
-                    onUpdate: () => setState(() {}),
-                  ),
-                  const ToolboxPanel(),
-                ],
-              ),
-            ),
-
-            // ses button
-            Positioned(
-              bottom: 100,
-              right: 140,
-              child: CustomButton(
-                label: 'Сохранить',
-                onPressed: () async {
-                  final schemeName = await showDialog<String>(
-                    context: context,
-                    builder: (_) => const SaveWindow(),
-                  );
-
-                  if (schemeName == null || schemeName.trim().isEmpty) return;
-
-                  SchemeStorage().addScheme(
-                    SavedSchemeModel(
-                      name: schemeName.trim(),
-                      createdAt: DateTime.now(),
-                      elements: List.from(elements),
+    return AnimatedBuilder(
+      animation: ColorManager.themeChanges,
+      builder: (context, _){
+        return Scaffold(
+        backgroundColor: ColorManager.primaryBackground,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Row(
+                  children: [
+                    CanvasWidget(
+                      elements: elements,
+                      onAddElement: (element) {
+                        setState(() {
+                          elements.add(element);
+                        });
+                      },
+                      onDeleteElement: _deleteElement,
+                      onUpdate: () => setState(() {}),
                     ),
-                  );
-                  
-                  if (mounted) {
-                    Navigator.of(context).pop(true);
-                  }
-                },
+                    const ToolboxPanel(),
+                  ],
+                ),
               ),
-            ),
-
-            Positioned(
-              top: 20,
-              left: 20,
-              child: CustomButton(
-                icon:Icon(Icons.arrow_back),
-                width: 50,
-                height: 50,
-                onPressed: () => Navigator.of(context).pop(),
+      
+              // ses button
+              Positioned(
+                bottom: 100,
+                right: 140,
+                child: CustomButton(
+                  label: 'Сохранить',
+                  onPressed: () async {
+                    final schemeName = await showDialog<String>(
+                      context: context,
+                      builder: (_) => const SaveWindow(),
+                    );
+      
+                    if (schemeName == null || schemeName.trim().isEmpty) return;
+      
+                    SchemeStorage().addScheme(
+                      SavedSchemeModel(
+                        name: schemeName.trim(),
+                        createdAt: DateTime.now(),
+                        elements: List.from(elements),
+                      ),
+                    );
+                    
+                    if (mounted) {
+                      Navigator.of(context).pop(true);
+                    }
+                  },
+                ),
               ),
-            ),
-
-            Positioned(
-              top: 30,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Text(
-                  widget.scheme?.name ?? 'Создание новой схемы',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
+      
+              Positioned(
+                top: 20,
+                left: 20,
+                child: CustomButton(
+                  icon:Icon(Icons.arrow_back),
+                  width: 50,
+                  height: 50,
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+      
+              Positioned(
+                top: 30,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Text(
+                    widget.scheme?.name ?? 'Создание новой схемы',
+                    style:  TextStyle(
+                      color: ColorManager.text,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      );
+      } 
     );
   }
 }
