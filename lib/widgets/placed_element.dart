@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ses_scada/widgets/ui/customDropdownMenu.dart';
 import 'package:ses_scada/widgets/ui/customLamp.dart';
 import 'package:ses_scada/widgets/ui/customPopupPage.dart';
 import 'package:ses_scada/widgets/ui/customButton.dart';
@@ -41,6 +42,8 @@ class _PlacedElementState extends State<PlacedElement> {
             'Элемент: ${widget.element.type.name}',
             style: TextStyle(color: ColorManager.text, fontSize: 16),
           ),
+          const SizedBox(height: 20),
+          CustomDropdown(items: []),
           const SizedBox(height: 20),
           CustomButton(
             label: 'Закрыть',
