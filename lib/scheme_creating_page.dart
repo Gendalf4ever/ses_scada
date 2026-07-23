@@ -95,7 +95,7 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
                   },
                 ),
               ),
-      
+                //back button
               Positioned(
                 top: 20,
                 left: 20,
@@ -106,7 +106,7 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),
-      
+                //label
               Positioned(
                 top: 30,
                 left: 0,
@@ -122,6 +122,78 @@ class _SchemeCreatingPageState extends State<SchemeCreatingPage> {
                   ),
                 ),
               ),
+                //export button
+              Positioned(
+                top: 20,
+                left: 80,
+                child: Tooltip(
+                  message: 'Экспортировать схему в json файл',
+                  child: CustomButton(
+                  icon: const Icon(Icons.save),
+                  width: 50,
+                  height: 50,
+                  onPressed: () async{
+                    final currentScheme = SavedSchemeModel(
+                      name: widget.scheme?.name ?? 'Новая схема', 
+                      createdAt: widget.scheme?.createdAt ?? DateTime.now(), 
+                      elements: elements
+                      );
+                      final error = await SchemeStorage().exportScheme(currentScheme);
+
+                      if (!mounted) return;
+
+                      if (error == null){
+                        setState(() {
+                          elements = SchemeStorage().schemes.last.elements;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                         const SnackBar(content: Text('Схема успешно экспортирована')),
+                        );
+                      } else if (error != 'canceled') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                           SnackBar(content: Text(error), backgroundColor: ColorManager.delete,)
+                        );
+                      }
+                    }
+                  ),
+                ),
+                ),
+                //import button
+                Positioned(
+                  top: 20,
+                  left: 140,
+                  child: Tooltip(
+                    message: 'Импортировать схему',
+                    child: CustomButton(
+                      icon: const Icon(Icons.file_upload_outlined),
+                      width: 50,
+                      height: 50,
+                      onPressed: () async{
+                        final error = await SchemeStorage().importScheme();
+                        if(!mounted) return;
+                        if (error == null){
+                          setState(() {
+                            if(SchemeStorage().schemes.isNotEmpty){
+                              elements = SchemeStorage().schemes.last.elements
+                              .map((e) => e.copy())
+                              .toList();
+                            }
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Схема успешно импортирована')),
+                          );
+                        } else if (error != 'canceled'){
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(error),
+                              backgroundColor: ColorManager.delete,
+                              ),
+                          );
+                        }
+                      }
+                    ),
+                  )
+                ),
             ],
           ),
         ),

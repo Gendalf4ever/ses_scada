@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -95,4 +96,66 @@ class SchemeStorage {
     final jsonStr = jsonEncode(scheme.toJson());
     await file.writeAsString(jsonStr);
   }
+
+  // import/export
+
+  Future<String?> exportScheme(SavedSchemeModel scheme) async {
+    try {
+      final saveName = scheme.name.replaceAll(RegExp(r'[^\w\-]+'), '_');
+      const typeGroup = XTypeGroup(
+        label: 'Схемы',
+        extensions: ['json'],
+      );
+
+      final fileLocation = await getSaveLocation(
+        acceptedTypeGroups: [typeGroup],
+        suggestedName: 'scheme_$saveName.json',
+      );
+
+      //user cancelled save
+      if (fileLocation == null) return 'cancelled';
+
+
+      final jsonStr = jsonEncode(scheme.toJson());
+      final xFile = XFile.fromData(
+        utf8.encode(jsonStr),
+        mimeType: 'application/json',
+        name: 'scheme_$saveName.json',
+      );
+
+      await xFile.saveTo(fileLocation.path);
+      return null;
+    } catch (e, st){
+      debugPrint('Export error: $e');
+      debugPrintStack(stackTrace: st);
+      return 'Ошибка при экспорте файла: $e';
+    }
 }
+    //import scheme from json
+Future<String?> importScheme() async {
+      try{
+        const typeGroup = XTypeGroup(
+          label: 'Схемы',
+          extensions:['json'], 
+          );
+          final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
+          //canceled by user
+          if (file == null) return 'canceled';
+          final jsonStr = await file.readAsString();
+          if (jsonStr.trim().isEmpty) {
+            return 'Выбранный файл пуст';
+          };
+
+          final data = jsonDecode(jsonStr);
+          final scheme = SavedSchemeModel.fromJson(data);
+
+          //save in local storage and add to memory list
+          await addScheme(scheme);
+          return null;
+      } catch (e,st){
+        debugPrint('Import error: $e');
+        debugPrintStack(stackTrace: st);
+        return 'Не удалось прочитать файл схемы:  $e';
+      }
+    }
+  }
