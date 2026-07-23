@@ -66,8 +66,11 @@ class _SchemesListPageState extends State<SchemesListPage> {
   Widget build(BuildContext context) {
     final schemes = SchemeStorage().schemes;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
+    return AnimatedBuilder(
+      animation: ColorManager.themeChanges,
+      builder: (context, _){
+         return Scaffold(
+      backgroundColor: ColorManager.primaryBackground,
       appBar: AppBar(
         centerTitle: true,
         title: Center(
@@ -86,38 +89,44 @@ class _SchemesListPageState extends State<SchemesListPage> {
               child: SizedBox(
                 width: 38,
                 height: 38,
-                child: CustomButton(
+                child: Tooltip(
+                  message: "Обновить схемы (клавиша R)",
+                   child: CustomButton(
                   icon: Icon(Icons.refresh, color: ColorManager.text),
                   onPressed: _loadSchemes,
+                ),
                 ),
               ),
             ),
           ),
           Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: SizedBox(
-                width: 38,
-                height: 38,
-                child: AnimatedBuilder(
-                  animation: ColorManager.themeChanges, 
-                  builder: (context, _){
-                    final isDark = ColorManager.activeTheme == AppThemes.dark;
-                    return CustomButton(
-                      icon: Icon(
-                        isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                        color: ColorManager.text,
-                      ),
-                      onPressed: (){
-                        final nextTheme = isDark ? AppThemes.light : AppThemes.dark;
-                        ColorManager.switchTheme(nextTheme);
-                      }
-                    );
-                  },
-                ),
+             child: Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: SizedBox(
+              width: 38,
+              height: 38,
+            child: Tooltip(
+              message: "Поменять тему приложения",
+              child: AnimatedBuilder(
+              animation: ColorManager.themeChanges, 
+              builder: (context, _) {
+            final isDark = ColorManager.activeTheme == AppThemes.dark;
+            return CustomButton(
+              icon: Icon(
+                isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                color: ColorManager.text,
               ),
-            ),
-          ) 
+              onPressed: () {
+                final nextTheme = isDark ? AppThemes.light : AppThemes.dark;
+                ColorManager.switchTheme(nextTheme);
+              },
+            );
+          },
+        ),
+      ),
+    ),
+  ),
+) 
         ],
       ),
       body: Column(
@@ -200,6 +209,8 @@ class _SchemesListPageState extends State<SchemesListPage> {
         ],
       ),
     );
+      },
+    );
   }
 }
 
@@ -245,8 +256,8 @@ class _SchemeCard extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 scheme.name,
-                style: const TextStyle(
-                  color: Colors.white,
+                style:  TextStyle(
+                  color: ColorManager.text,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),

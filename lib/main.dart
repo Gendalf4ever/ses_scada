@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ses_scada/state_manager/scheme_storage.dart';
+import 'package:ses_scada/widgets/components/colorManager.dart';
 import 'package:ses_scada/widgets/schemes_list_page.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,15 +14,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SES SCADA Scheme Editor',
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.black,
+    return ColorManagerProvider(
+      child: AnimatedBuilder(
+        animation: ColorManager.themeChanges,
+        builder: (context, _) {
+          return MaterialApp(
+            title: 'SES SCADA Scheme Editor',
+            theme: ThemeData(
+              brightness: ColorManager.activeTheme == AppThemes.dark 
+                  ? Brightness.dark 
+                  : Brightness.light,
+              primaryColor: ColorManager.primary,
+              scaffoldBackgroundColor: ColorManager.primaryBackground,
+            ),
+            home: const SchemesListPage(),
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
-      home: const SchemesListPage(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
