@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ses_scada/models/saved_scheme_model.dart';
 import 'package:ses_scada/scheme_creating_page.dart';
 import 'package:ses_scada/state_manager/scheme_storage.dart';
 import 'package:ses_scada/widgets/ui/customButton.dart';
-
 import 'components/colorManager.dart';
 
 class SchemesListPage extends StatefulWidget {
@@ -17,11 +17,43 @@ class _SchemesListPageState extends State<SchemesListPage> {
   @override
   void initState() {
     super.initState();
-    _loadSchemes();
+    HardwareKeyboard.instance.addHandler(_handleKeyEvent);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadSchemes();
+    });
+  }
+
+  @override
+  void dispose(){
+    HardwareKeyboard.instance.removeHandler(_handleKeyEvent);
+    super.dispose();
+  }
+
+  bool _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.keyR || 
+          event.logicalKey == LogicalKeyboardKey.keyK) {
+        _loadSchemes();
+        return true; // Событие обработано
+      }
+    }
+    return false; // Событие не обработано
   }
 
   Future<void> _loadSchemes() async {
+    if (!mounted) return;
+    
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Загрузка схем..."),
+          duration: Duration(milliseconds: 800),
+        ),
+      );
+    } catch (_) {}
+
     await SchemeStorage().load();
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -31,128 +63,145 @@ class _SchemesListPageState extends State<SchemesListPage> {
   }
 
   @override
-Widget build(BuildContext context) {
-  final schemes = SchemeStorage().schemes;
+  Widget build(BuildContext context) {
+    final schemes = SchemeStorage().schemes;
 
-  return Scaffold(
-    backgroundColor: Colors.black,
-    appBar: AppBar(
-      title: const Center(
-        child: Text(
-        textAlign: TextAlign.center,
-        'Схемы СЭС',
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      ),
-      ),
-      backgroundColor: const Color(0xFF1E2A30),
-      elevation: 0,
-      actions: [
-        CustomButton(
-          icon: Icon(Icons.refresh, color: ColorManager.text,),
-          onPressed: _loadSchemes,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Center(
+          child: Text(
+            textAlign: TextAlign.center,
+            'Схемы СЭС',
+            style: TextStyle(color: ColorManager.text, fontWeight: FontWeight.bold),
           ),
-
-          AnimatedBuilder(
-            animation: ColorManager.themeChanges, 
-            builder: (context, _){
-              final isDark = ColorManager.activeTheme == AppThemes.dark;
-              return CustomButton(
-                icon: Icon(
-                  isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                  color: ColorManager.text,
+        ),
+        backgroundColor: ColorManager.primaryBackground,
+        elevation: 0,
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12.0),
+              child: SizedBox(
+                width: 38,
+                height: 38,
+                child: CustomButton(
+                  icon: Icon(Icons.refresh, color: ColorManager.text),
+                  onPressed: _loadSchemes,
                 ),
-                onPressed: (){
-                  final nextTheme = isDark ? AppThemes.light : AppThemes.dark;
-                  ColorManager.switchTheme(nextTheme);
-                }
-              );
-            },
-          ),
-      ],
-    ),
-    body: Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(16),
-          child: ElevatedButton.icon(
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SchemeCreatingPage(),
-                ),
-              );
-              if (result == true) {
-                _loadSchemes();
-              }
-            },
-            icon: const Icon(Icons.add, size: 20),
-            label: const Text('Создать новую схему'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF4AA3DF),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
               ),
             ),
           ),
-        ),
-        Expanded(
-          child: schemes.isEmpty
-              ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.draw, size: 64, color: Colors.grey),
-                      SizedBox(height: 16),
-                      Text(
-                        'Нет сохранённых схем',
-                        style: TextStyle(color: Colors.grey, fontSize: 18),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12.0),
+              child: SizedBox(
+                width: 38,
+                height: 38,
+                child: AnimatedBuilder(
+                  animation: ColorManager.themeChanges, 
+                  builder: (context, _){
+                    final isDark = ColorManager.activeTheme == AppThemes.dark;
+                    return CustomButton(
+                      icon: Icon(
+                        isDark ? Icons.wb_sunny : Icons.nightlight_round,
+                        color: ColorManager.text,
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Нажмите "Создать новую схему" чтобы начать',
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
-                      ),
-                    ],
-                  ),
-                )
-              : GridView.builder(
-                  padding: const EdgeInsets.all(16),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.5,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: schemes.length,
-                  itemBuilder: (context, index) {
-                    final scheme = schemes[index];
-                    return _SchemeCard(
-                      scheme: scheme,
-                      onTap: () async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SchemeCreatingPage(scheme: scheme),
-                          ),
-                        );
-                        if (result == true) {
-                          _loadSchemes();
-                        }
-                      },
-                      onDelete: () => _deleteScheme(scheme),
+                      onPressed: (){
+                        final nextTheme = isDark ? AppThemes.light : AppThemes.dark;
+                        ColorManager.switchTheme(nextTheme);
+                      }
                     );
                   },
                 ),
-        ),
-      ],
-    ),
-  );
+              ),
+            ),
+          ) 
+        ],
+      ),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SchemeCreatingPage(),
+                  ),
+                );
+                if (result == true) {
+                  _loadSchemes();
+                }
+              },
+              icon: const Icon(Icons.add, size: 20),
+              label: const Text('Создать новую схему'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorManager.primaryBackground,
+                foregroundColor: ColorManager.text,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: schemes.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.draw, size: 64, color: ColorManager.text),
+                        SizedBox(height: 16),
+                        Text(
+                          'Нет сохранённых схем',
+                          style: TextStyle(color: ColorManager.text, fontSize: 18),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Нажмите "Создать новую схему" чтобы начать',
+                          style: TextStyle(color: ColorManager.text, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  )
+                : GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.5,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemCount: schemes.length,
+                    itemBuilder: (context, index) {
+                      final scheme = schemes[index];
+                      return _SchemeCard(
+                        scheme: scheme,
+                        onTap: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SchemeCreatingPage(scheme: scheme),
+                            ),
+                          );
+                          if (result == true) {
+                            _loadSchemes();
+                          }
+                        },
+                        onDelete: () => _deleteScheme(scheme),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
 }
-}
-
 
 // тест для сохранения схем
 class _SchemeCard extends StatelessWidget {
@@ -169,10 +218,10 @@ class _SchemeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF2A3A40),
+      color: ColorManager.primaryBackground,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Color(0xFF4AA3DF), width: 1),
+        side:  BorderSide(color: ColorManager.primary, width: 1),
       ),
       child: InkWell(
         onTap: onTap,
@@ -186,9 +235,9 @@ class _SchemeCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.draw, color: Color(0xFF4AA3DF), size: 28),
+                   Icon(Icons.draw, color: ColorManager.primary, size: 28),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+                    icon:  Icon(Icons.delete_outline, color: ColorManager.primary, size: 20),
                     onPressed: onDelete,
                   ),
                 ],
