@@ -3,23 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:ses_scada/models/saved_scheme_model.dart';
 import 'package:ses_scada/scheme_creating_page.dart';
 import 'package:ses_scada/state_manager/scheme_storage.dart';
-import 'package:ses_scada/widgets/ui/customButton.dart';
 import 'components/colorManager.dart';
 
 class SchemesListPage extends StatefulWidget {
   const SchemesListPage({super.key});
 
   @override
-  State<SchemesListPage> createState() => _SchemesListPageState();
+  State<SchemesListPage> createState() => SchemesListPageState();
 }
 
-class _SchemesListPageState extends State<SchemesListPage> {
+class SchemesListPageState extends State<SchemesListPage> {
   @override
   void initState() {
     super.initState();
     HardwareKeyboard.instance.addHandler(_handleKeyEvent);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadSchemes();
+      loadSchemes();
     });
   }
 
@@ -33,14 +32,14 @@ class _SchemesListPageState extends State<SchemesListPage> {
     if (event is KeyDownEvent) {
       if (event.logicalKey == LogicalKeyboardKey.keyR || 
           event.logicalKey == LogicalKeyboardKey.keyK) {
-        _loadSchemes();
+        loadSchemes();
         return true; // Событие обработано
       }
     }
     return false; // Событие не обработано
   }
 
-  Future<void> _loadSchemes() async {
+  Future<void> loadSchemes() async {
     if (!mounted) return;
     
     try {
@@ -71,64 +70,6 @@ class _SchemesListPageState extends State<SchemesListPage> {
       builder: (context, _){
          return Scaffold(
       backgroundColor: ColorManager.primaryBackground,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Center(
-          child: Text(
-            textAlign: TextAlign.center,
-            'Схемы СЭС',
-            style: TextStyle(color: ColorManager.text, fontWeight: FontWeight.bold),
-          ),
-        ),
-        backgroundColor: ColorManager.primaryBackground,
-        elevation: 0,
-        actions: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: SizedBox(
-                width: 38,
-                height: 38,
-                child: Tooltip(
-                  message: "Обновить схемы (клавиша R)",
-                   child: CustomButton(
-                  icon: Icon(Icons.refresh, color: ColorManager.text),
-                  onPressed: _loadSchemes,
-                ),
-                ),
-              ),
-            ),
-          ),
-          Center(
-             child: Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: SizedBox(
-              width: 38,
-              height: 38,
-            child: Tooltip(
-              message: "Поменять тему приложения",
-              child: AnimatedBuilder(
-              animation: ColorManager.themeChanges, 
-              builder: (context, _) {
-            final isDark = ColorManager.activeTheme == AppThemes.dark;
-            return CustomButton(
-              icon: Icon(
-                isDark ? Icons.wb_sunny : Icons.nightlight_round,
-                color: ColorManager.text,
-              ),
-              onPressed: () {
-                final nextTheme = isDark ? AppThemes.light : AppThemes.dark;
-                ColorManager.switchTheme(nextTheme);
-              },
-            );
-          },
-        ),
-      ),
-    ),
-  ),
-) 
-        ],
-      ),
       body: Column(
         children: [
           Container(
@@ -142,7 +83,7 @@ class _SchemesListPageState extends State<SchemesListPage> {
                   ),
                 );
                 if (result == true) {
-                  _loadSchemes();
+                  loadSchemes();
                 }
               },
               icon: const Icon(Icons.add, size: 20),
@@ -198,7 +139,7 @@ class _SchemesListPageState extends State<SchemesListPage> {
                             ),
                           );
                           if (result == true) {
-                            _loadSchemes();
+                            loadSchemes();
                           }
                         },
                         onDelete: () => _deleteScheme(scheme),

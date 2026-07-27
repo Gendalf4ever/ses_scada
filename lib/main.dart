@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:ses_scada/main_layout.dart';
 import 'package:ses_scada/state_manager/scheme_storage.dart';
 import 'package:ses_scada/widgets/components/colorManager.dart';
-import 'package:ses_scada/widgets/schemes_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
               primaryColor: ColorManager.primary,
               scaffoldBackgroundColor: ColorManager.primaryBackground,
             ),
-            home: const SchemesListPage(),
+            home: const MainLayout(),
             debugShowCheckedModeBanner: false,
           );
         },
